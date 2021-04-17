@@ -3,6 +3,10 @@ using Zenject;
 using System.Linq;
 using SiraUtil.Events;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace SiraUtil.Services
 {
@@ -17,6 +21,7 @@ namespace SiraUtil.Services
         private readonly List<DelegateWrapper> _queuedNormalActions = new List<DelegateWrapper>();
 
         private SaberModelController _saberModelController;
+
         internal SaberModelController ModelPrefab
         {
             get => _saberModelController;
@@ -77,7 +82,7 @@ namespace SiraUtil.Services
         /// <returns>The current saber model.</returns>
         public SaberModelController GetModel()
         {
-            var smc = ModelPrefab == null ? null : _container.InstantiatePrefab(ModelPrefab.gameObject).GetComponent<SaberModelController>();
+	        var smc = ModelPrefab == null ? null : _container.InstantiatePrefab(ModelPrefab.gameObject).GetComponent<SaberModelController>();
             return smc;
         }
 
@@ -102,11 +107,12 @@ namespace SiraUtil.Services
                 var smc = ModelPrefab == null ? null : _container.InstantiatePrefab(ModelPrefab.gameObject).GetComponent<SaberModelController>();
                 if (smc == null)
                 {
+	                
                     _queuedNormalActions.Add(new DelegateWrapper().Wrap(callback));
                 }
                 else
                 {
-                    callback.Invoke((T)GetModel());
+	                callback.Invoke((T)smc);
                 }
             }
             else
@@ -120,7 +126,7 @@ namespace SiraUtil.Services
         {
             if (IsSafe(false))
             {
-                foreach (var action in _queuedNormalActions)
+	            foreach (var action in _queuedNormalActions)
                 {
                     action.actionObj.Invoke(GetModel());
                 }

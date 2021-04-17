@@ -104,7 +104,7 @@ namespace SiraUtil.Services
         {
             if (_gameCoreInstalling)
             {
-                var smc = ModelPrefab == null ? null : _container.InstantiatePrefab(ModelPrefab.gameObject).GetComponent<SaberModelController>();
+                var smc = GetModel();
                 if (smc == null)
                 {
 	                
